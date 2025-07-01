@@ -40,12 +40,12 @@ class Sortie
     private ?Campus $campus = null;
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
-    private ?Participant $organisteur = null;
+    private ?Utilisateur $organisateur = null;
 
     /**
-     * @var Collection<int, Participant>
+     * @var Collection<int, Utilisateur>
      */
-    #[ORM\ManyToMany(targetEntity: Participant::class, inversedBy: 'sorties')]
+    #[ORM\ManyToMany(targetEntity: Utilisateur::class, inversedBy: 'sorties')]
     private Collection $participants;
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
@@ -148,27 +148,27 @@ class Sortie
         return $this;
     }
 
-    public function getOrganisteur(): ?Participant
+    public function getOrganisteur(): ?Utilisateur
     {
         return $this->organisteur;
     }
 
-    public function setOrganisteur(?Participant $organisteur): static
+    public function setOrganisteur(?Utilisateur $organisateur): static
     {
-        $this->organisteur = $organisteur;
+        $this->organisteur = $organisateur;
 
         return $this;
     }
 
     /**
-     * @return Collection<int, Participant>
+     * @return Collection<int, Utilisateur>
      */
     public function getParticipants(): Collection
     {
         return $this->participants;
     }
 
-    public function addParticipant(Participant $participant): static
+    public function addParticipant(Utilisateur $participant): static
     {
         if (!$this->participants->contains($participant)) {
             $this->participants->add($participant);
@@ -177,7 +177,7 @@ class Sortie
         return $this;
     }
 
-    public function removeParticipant(Participant $participant): static
+    public function removeParticipant(Utilisateur $participant): static
     {
         $this->participants->removeElement($participant);
 

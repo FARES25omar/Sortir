@@ -2,13 +2,18 @@
 
 namespace App\Entity;
 
-use App\Repository\ParticipantRepository;
+use App\Repository\UtilisateurRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
-#[ORM\Entity(repositoryClass: ParticipantRepository::class)]
-class Participant
+#[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
+#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_MAIL', fields: ['mail'])]
+#[UniqueEntity(fields: ['mail'], message: 'There is already an account with this mail')]
+class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -30,8 +35,11 @@ class Participant
     #[ORM\Column(length: 255)]
     private ?string $motPasse = null;
 
+    #[ORM\Column(type: 'json')]
+    private array $roles = [];
+
     #[ORM\Column(length: 255)]
-    private ?string $administrateur = null;
+    private ?bool $administrateur = null;
 
     #[ORM\Column]
     private ?bool $actif = null;
@@ -42,8 +50,11 @@ class Participant
     /**
      * @var Collection<int, Sortie>
      */
-    #[ORM\OneToMany(targetEntity: Sortie::class, mappedBy: 'organisteur')]
+    #[ORM\OneToMany(targetEntity: Sortie::class, mappedBy: 'organisateur')]
     private Collection $sorties;
+
+    #[ORM\Column]
+    private bool $isVerified = false;
 
     public function __construct()
     {
@@ -115,12 +126,30 @@ class Participant
         return $this;
     }
 
-    public function getAdministrateur(): ?string
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        $roles[] = 'ROLE_Participant';
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): static
+    {
+        $this->roles = $roles;
+        return $this;
+    }
+    Public function setRole(String $role): static
+    {
+        array_push($this->roles, $role);
+        return $this;
+    }
+
+    public function getAdministrateur(): ?bool
     {
         return $this->administrateur;
     }
 
-    public function setAdministrateur(string $administrateur): static
+    public function setAdministrateur(bool $administrateur): static
     {
         $this->administrateur = $administrateur;
 
@@ -163,7 +192,7 @@ class Participant
     {
         if (!$this->sorties->contains($sorty)) {
             $this->sorties->add($sorty);
-            $sorty->setOrganisteur($this);
+            $sorty->setorganisateur($this);
         }
 
         return $this;
@@ -173,10 +202,37 @@ class Participant
     {
         if ($this->sorties->removeElement($sorty)) {
             // set the owning side to null (unless already changed)
-            if ($sorty->getOrganisteur() === $this) {
-                $sorty->setOrganisteur(null);
+            if ($sorty->getorganisateur() === $this) {
+                $sorty->setorganisateur(null);
             }
         }
+
+        return $this;
+    }
+
+    public function eraseCredentials()
+    {
+        // TODO: Implement eraseCredentials() method.
+    }
+
+    public function getUserIdentifier(): string
+    {
+
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->getMotPasse();
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): static
+    {
+        $this->isVerified = $isVerified;
 
         return $this;
     }
