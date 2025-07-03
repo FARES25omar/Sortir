@@ -19,6 +19,9 @@ class Sortie
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
+
     #[ORM\Column]
     private ?\DateTime $dateHeureDebut = null;
 
@@ -29,10 +32,13 @@ class Sortie
     private ?\DateTime $dateLimiteInscription = null;
 
     #[ORM\Column]
-    private ?int $nbInscriptionMax = null;
+    private ?int $nbInscriptionsMax = null;
 
     #[ORM\Column(length: 255)]
     private ?string $infosSortie = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $motifAnnulation = null;
 
 
 
@@ -76,6 +82,18 @@ class Sortie
         return $this;
     }
 
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
     public function getDateHeureDebut(): ?\DateTime
     {
         return $this->dateHeureDebut;
@@ -112,14 +130,14 @@ class Sortie
         return $this;
     }
 
-    public function getNbInscriptionMax(): ?int
+    public function getNbInscriptionsMax(): ?int
     {
-        return $this->nbInscriptionMax;
+        return $this->nbInscriptionsMax;
     }
 
-    public function setNbInscriptionMax(int $nbInscriptionMax): static
+    public function setNbInscriptionsMax(int $nbInscriptionMax): static
     {
-        $this->nbInscriptionMax = $nbInscriptionMax;
+        $this->nbInscriptionsMax = $nbInscriptionMax;
 
         return $this;
     }
@@ -132,6 +150,18 @@ class Sortie
     public function setInfosSortie(string $infosSortie): static
     {
         $this->infosSortie = $infosSortie;
+
+        return $this;
+    }
+
+    public function getMotifAnnulation(): ?string
+    {
+        return $this->motifAnnulation;
+    }
+
+    public function setMotifAnnulation(?string $motifAnnulation): static
+    {
+        $this->motifAnnulation = $motifAnnulation;
 
         return $this;
     }

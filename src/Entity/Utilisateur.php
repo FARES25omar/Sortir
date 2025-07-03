@@ -38,7 +38,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'json')]
     private array $roles = [];
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, options: ["default" => false])]
     private ?bool $administrateur = null;
 
     #[ORM\Column]
@@ -217,7 +217,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getUserIdentifier(): string
     {
-
+        return $this->mail;
     }
 
     public function getPassword(): ?string
