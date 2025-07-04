@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la Sortie{% endblock %}
+
+{% block body %}
+    <h1>{{ sortie.nom }}</h1>
+
+    <div class="sortie-details">
+        <p><strong>Date et heure : </strong>{{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</p>
+        <p><strong>Date limite d'inscription : </strong>{{ sortie.dateLimiteInscription|date('d/m/Y') }}</p>
+        <p><strong>Nombre de places : </strong>{{ sortie.participants|length }}/{{ sortie.nbInscriptionsMax }}</p>
+        <p><strong>Durée : </strong>{{ sortie.duree|date('H:i') }}</p>
+        <p><strong>Description : </strong>{{ sortie.description }}</p>
+        <p><strong>Campus : </strong>{{ sortie.campus.nom }}</p>
+        <p><strong>Lieu : </strong>{{ sortie.lieu.nom }}</p>
+        <p><strong>Rue : </strong>{{ sortie.lieu.rue }}</p>
+        <p><strong>Code postal : </strong>{{ sortie.lieu.ville.codePostal }}</p>
+        <p><strong>Ville : </strong>{{ sortie.lieu.ville.nom }}</p>
+
+        {% if sortie.motifAnnulation %}
+            <div class="alert alert-danger">
+                <strong>Sortie annulée : </strong>{{ sortie.motifAnnulation }}
+            </div>
+        {% endif %}
+
+        <div class="actions">
+            {% if app.user %}
+                {% if sortie.participants.contains(app.user) %}
+                    <form action="{{ path('sortie_unregister', {'id': sortie.id}) }}" method="post">
+                        <button type="submit" class="btn btn-danger">Se désinscrire</button>
+                    </form>
+                {% else %}
+                    <form action="{{ path('sortie_register', {'id': sortie.id}) }}" method="post">
+                        <button type="submit" class="btn btn-success">S'inscrire</button>
+                    </form>
+                {% endif %}
+
+                {% if app.user == sortie.organisateur %}
+                    <a href="{{ path('sortie_edit', {'id': sortie.id}) }}" class="btn btn-warning">Modifier</a>
+                    <a href="{{ path('sortie_cancel', {'id': sortie.id}) }}" class="btn btn-danger">Annuler la sortie</a>
+                {% endif %}
+            {% endif %}
+        </div>
+
+        <h2>Liste des participants</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for participant in sortie.participants %}
+                    <tr>
+                        <td>{{ participant.nom }}</td>
+                        <td>{{ participant.prenom }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

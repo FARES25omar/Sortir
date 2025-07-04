@@ -192,7 +192,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->sorties->contains($sorty)) {
             $this->sorties->add($sorty);
-            $sorty->setorganisateur($this);
+            $sorty->setorganisteur($this);
         }
 
         return $this;
@@ -201,9 +201,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeSorty(Sortie $sorty): static
     {
         if ($this->sorties->removeElement($sorty)) {
-            // set the owning side to null (unless already changed)
-            if ($sorty->getorganisateur() === $this) {
-                $sorty->setorganisateur(null);
+
+            if ($sorty->getorganisteur() === $this) {
+                $sorty->setorganisteur(null);
             }
         }
 

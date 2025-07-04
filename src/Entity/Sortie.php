@@ -178,14 +178,14 @@ class Sortie
         return $this;
     }
 
-    public function getOrganisteur(): ?Utilisateur
+    public function getorganisateur(): ?Utilisateur
     {
-        return $this->organisteur;
+        return $this->organisateur;
     }
 
-    public function setOrganisteur(?Utilisateur $organisateur): static
+    public function setorganisateur(?Utilisateur $organisateur): static
     {
-        $this->organisteur = $organisateur;
+        $this->organisateur = $organisateur;
 
         return $this;
     }

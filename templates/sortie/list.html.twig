@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Sorties{% endblock %}
+
+{% block body %}
+    <h1>Liste des Sorties</h1>
+
+    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+        <a href="{{ path('sortie_new') }}" class="btn btn-primary">Créer une nouvelle sortie</a>
+    {% endif %}
+
+    <div class="sorties-list">
+        {% for sortie in sorties %}
+            <div class="sortie-card">
+                <h2>{{ sortie.nom }}</h2>
+                <p>Date : {{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</p>
+                <p>Clôture : {{ sortie.dateLimiteInscription|date('d/m/Y') }}</p>
+                <p>Inscrits : {{ sortie.participants|length }}/{{ sortie.nbInscriptionsMax }}</p>
+{#                <p>État : {{ sortie.etat.libelle }}</p>#}
+                <p>Organisateur : {{ sortie.organisateur.prenom }} {{ sortie.organisateur.nom }}</p>
+                
+                <div class="actions">
+                    <a href="{{ path('sortie_show', {'id': sortie.id}) }}" class="btn btn-info">Voir</a>
+                    
+                    {% if app.user == sortie.organisateur %}
+                        <a href="{{ path('sortie_edit', {'id': sortie.id}) }}" class="btn btn-warning">Modifier</a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
